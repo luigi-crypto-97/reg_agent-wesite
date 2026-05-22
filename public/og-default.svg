@@ -1,51 +1,51 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
   <defs>
     <radialGradient id="glow" cx="0.85" cy="0.15" r="0.6">
-      <stop offset="0%" stop-color="#c15f3c" stop-opacity="0.16"/>
-      <stop offset="100%" stop-color="#c15f3c" stop-opacity="0"/>
+      <stop offset="0%" stop-color="#c15f3c" stop-opacity="0.16"></stop>
+      <stop offset="100%" stop-color="#c15f3c" stop-opacity="0"></stop>
     </radialGradient>
   </defs>
-  <rect width="1200" height="630" fill="#f5f1e8"/>
-  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect width="1200" height="630" fill="#f5f1e8"></rect>
+  <rect width="1200" height="630" fill="url(#glow)"></rect>
 
-  <!-- Brand mark -->
+  
   <g transform="translate(80,90)">
-    <circle cx="20" cy="20" r="20" fill="#1a1915"/>
+    <circle cx="20" cy="20" r="20" fill="#1a1915"></circle>
     <text x="20" y="28" font-family="Georgia, serif" font-style="italic" font-weight="500" font-size="22" text-anchor="middle" fill="#f5f1e8">F</text>
-    <circle cx="29" cy="28" r="3" fill="#c15f3c"/>
+    <circle cx="29" cy="28" r="3" fill="#c15f3c"></circle>
     <text x="56" y="28" font-family="Georgia, serif" font-size="20" fill="#1a1915">[NOME BRAND]</text>
   </g>
 
-  <!-- Eyebrow -->
+  
   <g transform="translate(80, 230)">
-    <line x1="0" y1="0" x2="32" y2="0" stroke="#c15f3c" stroke-width="1.5"/>
+    <line x1="0" y1="0" x2="32" y2="0" stroke="#c15f3c" stroke-width="1.5"></line>
     <text x="44" y="5" font-family="Inter, sans-serif" font-size="14" fill="#797466" letter-spacing="3">PORTALE INFORMATIVO</text>
   </g>
 
-  <!-- Monumental headline -->
+  
   <text x="80" y="330" font-family="Georgia, serif" font-size="92" font-weight="500" fill="#1a1915" letter-spacing="-3">Apri la tua company</text>
-  <text x="80" y="430" font-family="Georgia, serif" font-size="92" font-weight="500" fill="#1a1915" letter-spacing="-3">in <tspan font-style="italic" fill="#96482b">Florida</tspan>, dall'Italia.</text>
+  <text x="80" y="430" font-family="Georgia, serif" font-size="92" font-weight="500" fill="#1a1915" letter-spacing="-3">in <tspan font-style="italic" fill="#96482b">Florida</tspan>, dall&#39;Italia.</text>
 
-  <!-- Sub -->
+  
   <text x="80" y="510" font-family="Inter, sans-serif" font-size="22" fill="#47443c">Servizio amministrativo end-to-end · Filing tramite partner USA</text>
 
-  <!-- Big watermark -->
+  
   <text x="80" y="600" font-family="Georgia, serif" font-style="italic" font-size="32" fill="#c15f3c" opacity="0.5" letter-spacing="-1">Italia → Florida ✦</text>
 
-  <!-- Right side accent -->
+  
   <g transform="translate(960, 90)" opacity="0.85">
-    <rect x="0" y="0" width="160" height="220" rx="14" fill="#1a1915"/>
+    <rect x="0" y="0" width="160" height="220" rx="14" fill="#1a1915"></rect>
     <text x="20" y="34" font-family="Inter, sans-serif" font-size="10" letter-spacing="3" fill="#c15f3c">FILING STATUS</text>
     <text x="20" y="78" font-family="Georgia, serif" font-size="22" fill="#f5f1e8">Italia Group</text>
     <text x="20" y="106" font-family="Georgia, serif" font-style="italic" font-size="22" fill="#c15f3c">LLC</text>
 
-    <circle cx="26" cy="148" r="6" fill="#c15f3c"/>
+    <circle cx="26" cy="148" r="6" fill="#c15f3c"></circle>
     <text x="40" y="153" font-family="Inter, sans-serif" font-size="12" fill="#f5f1e8">Articles filed</text>
 
-    <circle cx="26" cy="174" r="6" fill="#c15f3c"/>
+    <circle cx="26" cy="174" r="6" fill="#c15f3c"></circle>
     <text x="40" y="179" font-family="Inter, sans-serif" font-size="12" fill="#f5f1e8">Registered Agent</text>
 
-    <circle cx="26" cy="200" r="6" fill="#c15f3c"/>
+    <circle cx="26" cy="200" r="6" fill="#c15f3c"></circle>
     <text x="40" y="205" font-family="Inter, sans-serif" font-size="12" fill="#f5f1e8">EIN richiesto</text>
   </g>
 </svg>

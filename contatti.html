@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contatti — Meridiano</title>
+<meta name="description" content="Prenota una conversazione di trenta minuti, in italiano, senza obbligo di proseguire." />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap nav">
+    <a href="index.html" class="brand"><span class="mark">M</span><span class="word">Meridiano</span></a>
+    <nav class="nav-links">
+      <a href="come-funziona.html">Come funziona</a>
+      <a href="registered-agent.html">Registered Agent</a>
+      <a href="business-in-florida.html">Business in Florida</a>
+      <a href="faq.html">Domande</a>
+      <a href="contatti.html" class="is-active">Contatti</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="contatti.html" class="btn btn-outline" style="padding:10px 18px; font-size:13px;">Apri pratica <span class="arr">→</span></a>
+      <button class="nav-toggle" aria-label="Apri menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="4" y1="8" x2="20" y2="8"/><line x1="4" y1="16" x2="20" y2="16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+<div id="m-menu" class="mobile-menu">
+  <a href="come-funziona.html"><span><em>—</em> Come funziona</span><span class="n">01</span></a>
+  <a href="registered-agent.html"><span><em>—</em> Registered Agent</span><span class="n">02</span></a>
+  <a href="business-in-florida.html"><span><em>—</em> Business in Florida</span><span class="n">03</span></a>
+  <a href="faq.html"><span><em>—</em> Domande</span><span class="n">04</span></a>
+  <a href="contatti.html"><span><em>—</em> Contatti</span><span class="n">05</span></a>
+</div>
+
+<main>
+
+<!-- ===== Hero ===== -->
+<section style="padding:80px 0 60px; position:relative; overflow:hidden;">
+  <div class="glow-hero" style="top:-200px; right:-200px;"></div>
+  <div class="wrap" style="position:relative; z-index:2;">
+    <div class="flex" style="justify-content:space-between; align-items:baseline; padding-bottom:40px;" data-reveal>
+      <nav style="font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.14em; color:rgb(var(--ink-mute));">
+        <a href="index.html" class="link-line">Home</a>
+        <span style="margin:0 12px; color:rgb(var(--ink-faint));">/</span>
+        <span style="color:rgb(var(--ink));">Contatti</span>
+      </nav>
+      <span class="kicker">Risposta entro 1 giorno lavorativo</span>
+    </div>
+
+    <div data-reveal data-delay="100">
+      <span class="kicker">05 / L'incontro</span>
+      <h1 class="display mt-4" style="margin-top:18px; font-size:clamp(2.6rem, 8vw, 7rem);">
+        <em>Scriveteci</em>.<br/>
+        Vi rispondiamo,<br/>
+        in italiano.
+      </h1>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Form + sidebar ===== -->
+<section style="padding:40px 0 120px;">
+  <div class="wrap">
+    <div class="grid-12" style="gap:64px; align-items:start;">
+
+      <!-- Form -->
+      <div class="col-7" style="grid-column: span 7;" data-reveal data-delay="200">
+        <div data-form-stage data-stage="idle">
+
+          <!-- Idle / form -->
+          <div data-stage-content="idle">
+            <span class="kicker">Modulo di contatto</span>
+            <h2 class="display-md mt-4" style="margin-top:14px; font-size:clamp(1.8rem, 3.5vw, 2.8rem);">
+              Una <em>conversazione</em>,<br/>per cominciare.
+            </h2>
+
+            <form data-lead-form style="margin-top:48px; display:flex; flex-direction:column; gap:28px;">
+
+              <div class="grid-12" style="gap:20px;">
+                <div class="col-6" style="grid-column: span 6;">
+                  <label class="field-label" for="name">Nome e cognome <span class="req">*</span></label>
+                  <input id="name" name="name" type="text" required class="field-input" placeholder="Mario Rossi" />
+                </div>
+                <div class="col-6" style="grid-column: span 6;">
+                  <label class="field-label" for="email">Email <span class="req">*</span></label>
+                  <input id="email" name="email" type="email" required class="field-input" placeholder="nome@azienda.com" />
+                </div>
+              </div>
+
+              <div class="grid-12" style="gap:20px;">
+                <div class="col-6" style="grid-column: span 6;">
+                  <label class="field-label" for="phone">Telefono <span style="color:rgb(var(--ink-faint));">(opzionale)</span></label>
+                  <input id="phone" name="phone" type="tel" class="field-input" placeholder="+39 ..." />
+                </div>
+                <div class="col-6" style="grid-column: span 6;">
+                  <label class="field-label" for="type">Tipo di richiesta <span class="req">*</span></label>
+                  <select id="type" name="type" required class="field-select">
+                    <option value="">Seleziona...</option>
+                    <option>Informazioni generali</option>
+                    <option>LLC in Florida</option>
+                    <option>Corporation in Florida</option>
+                    <option>Registered Agent</option>
+                    <option>Cambio registered agent</option>
+                    <option>Altro</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="field-label" for="message">Messaggio <span class="req">*</span></label>
+                <textarea id="message" name="message" required class="field-textarea" placeholder="Raccontaci brevemente il progetto: l'attività, l'obiettivo, le tempistiche."></textarea>
+              </div>
+
+              <!-- "Quando preferisci essere ricontattato?" -->
+              <div>
+                <label class="field-label">Quando vuoi essere ricontattato?</label>
+                <div class="flex gap-3" style="flex-wrap:wrap;">
+                  <label style="display:flex; gap:10px; align-items:center; padding:12px 18px; border-radius:999px; box-shadow:inset 0 0 0 1px rgb(var(--hairline-hard)); cursor:pointer; font-size:13px;">
+                    <input type="radio" name="when" value="morning" style="accent-color: rgb(var(--ink));" />
+                    Mattina (9-12)
+                  </label>
+                  <label style="display:flex; gap:10px; align-items:center; padding:12px 18px; border-radius:999px; box-shadow:inset 0 0 0 1px rgb(var(--hairline-hard)); cursor:pointer; font-size:13px;">
+                    <input type="radio" name="when" value="afternoon" style="accent-color: rgb(var(--ink));" checked />
+                    Pomeriggio (14-18)
+                  </label>
+                  <label style="display:flex; gap:10px; align-items:center; padding:12px 18px; border-radius:999px; box-shadow:inset 0 0 0 1px rgb(var(--hairline-hard)); cursor:pointer; font-size:13px;">
+                    <input type="radio" name="when" value="evening" style="accent-color: rgb(var(--ink));" />
+                    Sera (18-20)
+                  </label>
+                  <label style="display:flex; gap:10px; align-items:center; padding:12px 18px; border-radius:999px; box-shadow:inset 0 0 0 1px rgb(var(--hairline-hard)); cursor:pointer; font-size:13px;">
+                    <input type="radio" name="when" value="any" style="accent-color: rgb(var(--ink));" />
+                    Indifferente
+                  </label>
+                </div>
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:14px; margin-top:8px;">
+                <label class="flex gap-3" style="font-size:13.5px; line-height:1.5; color:rgb(var(--ink-soft)); cursor:pointer; align-items:flex-start;">
+                  <input name="privacy" type="checkbox" required style="accent-color: rgb(var(--ink)); margin-top:3px;" />
+                  <span>Ho letto la <a href="#" class="link-line" style="color:rgb(var(--ink));">Privacy Policy</a> e acconsento al trattamento dei dati. <span class="req">*</span></span>
+                </label>
+                <label class="flex gap-3" style="font-size:13.5px; line-height:1.5; color:rgb(var(--ink-soft)); cursor:pointer; align-items:flex-start;">
+                  <input name="marketing" type="checkbox" style="accent-color: rgb(var(--ink)); margin-top:3px;" />
+                  <span>Acconsento a ricevere occasionalmente la nostra newsletter editoriale "Business in Florida". <span style="color:rgb(var(--ink-faint));">(opzionale)</span></span>
+                </label>
+              </div>
+
+              <p data-form-error style="display:none; color:rgb(var(--clay-deep)); font-size:13px;"></p>
+
+              <button type="submit" class="btn btn-primary btn-lg" style="margin-top:8px;">
+                Invia richiesta <span class="arr">→</span>
+              </button>
+
+              <p style="font-size:12px; color:rgb(var(--ink-faint)); line-height:1.6;">
+                Inviando il modulo accetti il <a href="#" class="link-line" style="color:rgb(var(--ink-soft));">Disclaimer</a>.
+                L'invio non costituisce mandato professionale.
+              </p>
+            </form>
+          </div>
+
+          <!-- Success -->
+          <div data-stage-content="success" style="text-align:center; padding:60px 32px; background:rgb(var(--paper-soft)); border-radius:24px; box-shadow:inset 0 0 0 1px rgb(var(--hairline));">
+            <div style="width:72px; height:72px; border-radius:50%; background:rgb(var(--clay-wash)); display:inline-flex; align-items:center; justify-content:center; color:rgb(var(--clay-deep));">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h2 class="display-md mt-6" style="margin-top:32px; font-size:clamp(1.8rem, 3vw, 2.4rem);">
+              Richiesta <em>ricevuta</em>.
+            </h2>
+            <p class="lead mt-4" style="margin-top:18px; max-width:36ch; margin-left:auto; margin-right:auto;">
+              Ti rispondiamo entro un giorno lavorativo, al numero o all'indirizzo che ci hai indicato.
+            </p>
+            <a href="business-in-florida.html" class="btn btn-outline mt-8" style="margin-top:32px;">Nel frattempo, leggi gli articoli <span class="arr">→</span></a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="col-5" style="grid-column: span 5; display:flex; flex-direction:column; gap:32px;" data-reveal data-delay="300">
+
+        <div class="card">
+          <div class="kicker mb-4">Direttamente</div>
+          <div class="font-serif" style="font-size:clamp(1.5rem, 2.2vw, 1.9rem); line-height:1.25; letter-spacing:-0.018em;">
+            <em style="font-style:italic; color:rgb(var(--clay-deep)); ">ciao</em><span style="color:rgb(var(--ink-mute));">@</span>meridiano.it<br/>
+            <span style="font-size:0.7em; color:rgb(var(--ink-mute));">+39 02 4953 1820</span>
+          </div>
+          <p style="font-size:13px; color:rgb(var(--ink-mute)); margin-top:18px; line-height:1.6;">
+            Lun–Ven · 09:00–18:00 (CET)<br/>
+            Risposta entro un giorno lavorativo.
+          </p>
+        </div>
+
+        <div class="card card-dark">
+          <div class="kicker" style="color:rgb(var(--paper) / 0.5);">Una <em class="font-serif" style="font-style:italic; color:rgb(var(--clay-soft));">conversazione</em></div>
+          <h3 class="font-serif" style="font-size:clamp(1.4rem, 2vw, 1.7rem); line-height:1.25; color:rgb(var(--paper)); margin-top:14px; letter-spacing:-0.018em; font-variation-settings:'opsz' 72;">
+            30 minuti, in italiano, senza obbligo di proseguire.
+          </h3>
+          <p style="font-size:13.5px; color:rgb(var(--paper) / 0.7); margin-top:18px; line-height:1.6;">
+            Capiamo se la Florida è la giurisdizione giusta per te, e tu capisci se siamo l'interlocutore giusto.
+            Se la risposta a una delle due domande è no, ce lo diciamo.
+          </p>
+          <a href="#" class="btn btn-accent mt-6" style="margin-top:24px;">
+            Prenota su Calendly <span class="arr">→</span>
+          </a>
+        </div>
+
+        <div>
+          <span class="kicker">Sedi</span>
+          <div class="grid-12 mt-4" style="margin-top:14px; gap:16px;">
+            <div class="col-6" style="grid-column: span 6;">
+              <div class="kicker mb-3">Italia</div>
+              <p class="font-serif" style="font-size:18px; line-height:1.4; letter-spacing:-0.012em;">
+                Via dei Mille 18<br/>
+                <em style="font-style:italic; color:rgb(var(--clay-deep));">20121 Milano</em>
+              </p>
+            </div>
+            <div class="col-6" style="grid-column: span 6;">
+              <div class="kicker mb-3">USA</div>
+              <p class="font-serif" style="font-size:18px; line-height:1.4; letter-spacing:-0.012em;">
+                218 Main St<br/>
+                <em style="font-style:italic; color:rgb(var(--clay-deep));">Sarasota, FL 34236</em>
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Trust ===== -->
+<section class="section bg-paper-soft" style="padding:80px 0;">
+  <div class="wrap">
+    <div class="grid-12" style="gap:48px; align-items:center;" data-reveal>
+      <div class="col-6" style="grid-column: span 6;">
+        <h2 class="display-sm">
+          Prima di scriverci,<br/>
+          <em>tre</em> cose da sapere.
+        </h2>
+      </div>
+      <div class="col-6" style="grid-column: span 6;">
+        <ol style="list-style:none; padding:0; display:flex; flex-direction:column; gap:24px; counter-reset:items;">
+          <li style="position:relative; padding-left:50px; counter-increment:items;">
+            <span style="position:absolute; left:0; top:0; font-family: var(--font-display); font-style:italic; font-size:24px; color:rgb(var(--clay-deep)); ">01</span>
+            <p style="font-size:15.5px; color:rgb(var(--ink-soft)); line-height:1.6;">
+              <strong style="color:rgb(var(--ink));">Non siamo uno studio legale.</strong> Operiamo in Florida tramite un partner avvocato residente, che firma e deposita gli atti per conto del cliente.
+            </p>
+          </li>
+          <li style="position:relative; padding-left:50px; counter-increment:items;">
+            <span style="position:absolute; left:0; top:0; font-family: var(--font-display); font-style:italic; font-size:24px; color:rgb(var(--clay-deep)); ">02</span>
+            <p style="font-size:15.5px; color:rgb(var(--ink-soft)); line-height:1.6;">
+              <strong style="color:rgb(var(--ink));">Diciamo "no" più spesso di quanto pensi.</strong> Se la Florida non è la giurisdizione giusta per te, te lo diciamo nella prima conversazione, gratuitamente.
+            </p>
+          </li>
+          <li style="position:relative; padding-left:50px; counter-increment:items;">
+            <span style="position:absolute; left:0; top:0; font-family: var(--font-display); font-style:italic; font-size:24px; color:rgb(var(--clay-deep)); ">03</span>
+            <p style="font-size:15.5px; color:rgb(var(--ink-soft)); line-height:1.6;">
+              <strong style="color:rgb(var(--ink));">Niente preventivi a sorpresa.</strong> Il listino è pubblicato. Quello che dichiariamo è quello che paghi, una volta sola.
+            </p>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap" style="position:relative; z-index:2;">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <a href="index.html" class="brand" style="color:rgb(var(--paper));">
+          <span class="mark" style="background:rgb(var(--paper)); color:rgb(var(--ink));">M</span>
+          <span class="word">Meridiano</span>
+        </a>
+        <p class="lead mt-6" style="margin-top:24px; color:rgb(var(--paper) / 0.7); font-size:18px; max-width:38ch;">
+          Tra Italia e <em>Florida</em>, una linea sottile.
+        </p>
+        <p style="margin-top:24px; font-size:12.5px; color:rgb(var(--paper) / 0.45); line-height:1.6; max-width:38ch;">
+          Meridiano S.r.l. — Via dei Mille 18, 20121 Milano — P.IVA IT0123456789.<br/>
+          Operiamo in Florida tramite partner legale residente. <em>Non siamo uno studio legale.</em>
+        </p>
+      </div>
+      <div class="footer-col"><h4>Servizi</h4><ul>
+        <li><a href="come-funziona.html">LLC</a></li>
+        <li><a href="come-funziona.html">Corporation</a></li>
+        <li><a href="registered-agent.html">Registered Agent</a></li>
+        <li><a href="come-funziona.html">Annual Report</a></li>
+        <li><a href="come-funziona.html">EIN &amp; BOI</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Risorse</h4><ul>
+        <li><a href="business-in-florida.html">Business in Florida</a></li>
+        <li><a href="faq.html">Domande</a></li>
+        <li><a href="come-funziona.html">Come funziona</a></li>
+        <li><a href="contatti.html">Contatti</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Legale</h4><ul>
+        <li><a href="#">Privacy Policy</a></li>
+        <li><a href="#">Cookie Policy</a></li>
+        <li><a href="#">Termini d'uso</a></li>
+        <li><a href="#">Disclaimer</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bot">
+      <span>© 2026 Meridiano. Tutti i diritti riservati.</span>
+      <div class="legal"><span>Milano — Sarasota, FL</span><span>Ed. 2026 · v2.0</span></div>
+    </div>
+  </div>
+  <div class="footer-mono">Contatti</div>
+</footer>
+
+<style>
+[data-form-stage] [data-stage-content="success"] { display: none; }
+[data-form-stage][data-stage="success"] [data-stage-content="idle"] { display: none; }
+[data-form-stage][data-stage="success"] [data-stage-content="success"] { display: block; }
+</style>
+
+<script src="script.js"></script>
+</body>
+</html>
