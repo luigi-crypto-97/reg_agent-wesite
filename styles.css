@@ -424,6 +424,12 @@ input, select, textarea { font: inherit; color: inherit; }
 }
 
 .nav-cta { display: flex; align-items: center; gap: 14px; }
+.area-login-link {
+  color: rgb(var(--ink-soft));
+}
+.area-login-link:hover {
+  color: rgb(var(--clay-deep));
+}
 .nav-toggle {
   display: inline-flex;
   align-items: center;
@@ -1969,6 +1975,15 @@ input, select, textarea { font: inherit; color: inherit; }
   padding: 18px 0;
   border-top: 1px solid rgb(var(--hairline));
 }
+.mail-empty {
+  margin-top: 18px;
+  padding: 24px;
+  border-radius: 12px;
+  background: rgb(var(--paper-deep));
+  color: rgb(var(--ink-soft));
+  font-size: 14px;
+  line-height: 1.5;
+}
 .mail-row:first-of-type { margin-top: 18px; }
 .mail-row.is-selected {
   margin-left: -12px;
@@ -2032,6 +2047,7 @@ input, select, textarea { font: inherit; color: inherit; }
 .mail-status.urgent { background: rgb(var(--clay)); color: white; }
 .mail-status.new { background: rgb(var(--clay-wash)); color: rgb(var(--clay-deep)); }
 .mail-status.read { background: rgb(var(--paper-deep)); color: rgb(var(--ink-soft)); }
+.mail-status.review { background: rgb(255 246 210); color: rgb(132 86 0); }
 .mail-preview {
   margin-top: 18px;
   min-height: 240px;
@@ -2106,9 +2122,44 @@ input, select, textarea { font: inherit; color: inherit; }
   flex-wrap: wrap;
   margin-top: 24px;
 }
+.admin-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 18px;
+  align-items: start;
+  margin-top: 18px;
+}
+.admin-filter-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.admin-filter-tabs button {
+  min-height: 36px;
+  padding: 0 13px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgb(var(--hairline-hard));
+  color: rgb(var(--ink-soft));
+  font-size: 13px;
+}
+.admin-filter-tabs button.is-active {
+  background: rgb(var(--ink));
+  color: rgb(var(--paper));
+  box-shadow: none;
+}
+.admin-client-select {
+  margin-top: 22px;
+}
+.admin-detail .btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
 @media (max-width: 1180px) {
   .mail-layout { grid-template-columns: 260px minmax(0, 1fr); }
   .mail-detail { grid-column: 1 / -1; }
+  .admin-layout { grid-template-columns: 1fr; }
 }
 @media (max-width: 860px) {
   .client-title-row,

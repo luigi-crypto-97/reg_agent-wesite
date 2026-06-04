@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Console admin corrispondenza — Meridiano</title>
+<meta name="description" content="Console amministrativa Meridiano per revisione, assegnazione e pubblicazione della corrispondenza." />
+<meta name="robots" content="noindex,nofollow" />
+<link rel="canonical" href="https://example.com/admin.html" />
+<link rel="icon" type="image/svg+xml" href="public/favicon.svg" />
+<meta name="theme-color" content="#fafbfd" />
+<link rel="stylesheet" href="styles.css" />
+<script>
+(function () {
+  if (window.location.protocol === 'file:') return;
+  fetch('/api/session', { credentials: 'same-origin' })
+    .then(function (res) { return res.ok ? res.json() : null; })
+    .then(function (payload) {
+      if (!payload || !payload.ok || payload.user.role !== 'admin') {
+        window.location.replace('login.html?next=admin.html');
+      }
+    })
+    .catch(function () {
+      window.location.replace('login.html?next=admin.html');
+    });
+})();
+</script>
+</head>
+<body class="mail-app admin-app">
+
+<header class="client-header">
+  <div class="wrap client-nav">
+    <a href="index.html" class="brand" aria-label="Meridiano, home">
+      <span class="mark">M</span>
+      <span class="word">Meridiano</span>
+    </a>
+    <div class="client-account" aria-label="Account amministratore">
+      <span class="client-company">Meridiano Operations</span>
+      <span class="client-pill">Console admin</span>
+      <a href="login.html" class="btn btn-outline" data-demo-logout style="padding:10px 16px; font-size:13px;">Esci</a>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="client-hero">
+    <div class="wrap">
+      <div class="client-topline">
+        <nav class="client-breadcrumb" aria-label="Percorso">
+          <a href="index.html">Home</a>
+          <span>/</span>
+          <span>Console admin</span>
+        </nav>
+        <span class="kicker">Revisione manuale e pubblicazione documenti</span>
+      </div>
+      <div class="client-title-row">
+        <div>
+          <span class="kicker">Admin Mailroom</span>
+          <h1 class="client-title">Tutta la <em>corrispondenza</em></h1>
+          <p class="client-lead">Da qui l'amministratore vede tutti i documenti, inclusi casi dubbi, non assegnati e documenti già pubblicati ai singoli clienti.</p>
+        </div>
+        <div class="client-actions">
+          <button class="btn btn-outline" type="button" data-admin-refresh>Aggiorna</button>
+          <a href="login.html?next=corrispondenza-cliente.html" class="btn btn-primary" data-demo-logout>Login cliente demo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="client-workspace">
+    <div class="wrap">
+      <div class="mail-metrics" aria-label="Riepilogo amministrazione">
+        <article class="mail-metric">
+          <span>Totale posta</span>
+          <strong data-admin-total>0</strong>
+          <small>Tutti i clienti</small>
+        </article>
+        <article class="mail-metric">
+          <span>Da verificare</span>
+          <strong data-admin-review>0</strong>
+          <small>Casi in standby</small>
+        </article>
+        <article class="mail-metric is-alert">
+          <span>Non assegnata</span>
+          <strong data-admin-unassigned>0</strong>
+          <small>Richiede scelta cliente</small>
+        </article>
+        <article class="mail-metric">
+          <span>Pubblicata</span>
+          <strong data-admin-published>0</strong>
+          <small>Visibile ai clienti</small>
+        </article>
+      </div>
+
+      <div class="admin-layout">
+        <section class="mail-list admin-list" aria-label="Lista admin">
+          <div class="mail-list-head">
+            <div>
+              <span class="kicker">Coda amministrativa</span>
+              <h2>Documenti ricevuti</h2>
+            </div>
+            <div class="admin-filter-tabs" aria-label="Filtro admin">
+              <button class="is-active" type="button" data-admin-filter="all">Tutti</button>
+              <button type="button" data-admin-filter="needs_review">Da verificare</button>
+              <button type="button" data-admin-filter="published">Pubblicati</button>
+            </div>
+          </div>
+          <div data-admin-list>
+            <div class="mail-empty">Caricamento documenti...</div>
+          </div>
+        </section>
+
+        <aside class="mail-detail admin-detail" aria-label="Dettaglio amministrativo" data-admin-detail>
+          <div class="mail-panel">
+            <span class="kicker">Seleziona un documento</span>
+            <p class="mail-detail-copy">La scheda admin mostra cliente assegnato, stato pubblicazione, confidenza OCR e azioni manuali.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>

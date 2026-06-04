@@ -11,13 +11,23 @@
 <meta name="theme-color" content="#fafbfd" />
 <link rel="stylesheet" href="styles.css" />
 <script>
-try {
-  if (sessionStorage.getItem('meridiano:demo-auth') !== 'ok') {
-    window.location.replace('login.html?next=corrispondenza-cliente.html');
+(function () {
+  const loginUrl = 'login.html?next=corrispondenza-cliente.html';
+  const hasFallbackSession = function () {
+    try { return sessionStorage.getItem('meridiano:demo-auth') === 'ok'; } catch (e) { return false; }
+  };
+  if (window.location.protocol === 'file:') {
+    if (!hasFallbackSession()) window.location.replace(loginUrl);
+    return;
   }
-} catch (e) {
-  window.location.replace('login.html?next=corrispondenza-cliente.html');
-}
+  fetch('/api/session', { credentials: 'same-origin' })
+    .then(function (res) {
+      if (!res.ok && !hasFallbackSession()) window.location.replace(loginUrl);
+    })
+    .catch(function () {
+      if (!hasFallbackSession()) window.location.replace(loginUrl);
+    });
+})();
 </script>
 </head>
 <body class="mail-app">
@@ -54,8 +64,8 @@ try {
           <p class="client-lead">Qui trovi solo la posta già attribuita con sicurezza alla tua società o approvata da un amministratore. I casi dubbi restano in revisione e non vengono pubblicati.</p>
         </div>
         <div class="client-actions">
-          <button class="btn btn-outline" type="button">Segnala problema</button>
-          <button class="btn btn-primary" type="button">Scarica archivio</button>
+          <button class="btn btn-outline" type="button" data-report-issue>Segnala problema</button>
+          <button class="btn btn-primary" type="button" data-download-archive>Scarica archivio</button>
         </div>
       </div>
     </div>
@@ -66,22 +76,22 @@ try {
       <div class="mail-metrics" aria-label="Riepilogo corrispondenza">
         <article class="mail-metric">
           <span>Nuova posta</span>
-          <strong>3</strong>
+          <strong data-metric-new>3</strong>
           <small>2 documenti ricevuti oggi</small>
         </article>
         <article class="mail-metric">
           <span>In revisione</span>
-          <strong>5</strong>
+          <strong data-metric-review>5</strong>
           <small>Non ancora visibili al cliente</small>
         </article>
         <article class="mail-metric is-alert">
           <span>Urgenti</span>
-          <strong>1</strong>
+          <strong data-metric-urgent>1</strong>
           <small>Richiede risposta entro 7 giorni</small>
         </article>
         <article class="mail-metric">
           <span>Archiviate</span>
-          <strong>48</strong>
+          <strong data-metric-archived>48</strong>
           <small>Consultabili per anno</small>
         </article>
       </div>
@@ -91,35 +101,36 @@ try {
           <div class="mail-panel">
             <div class="mail-panel-head">
               <span class="kicker">Filtri</span>
-              <button type="button">Reset</button>
+              <button type="button" data-mail-reset>Reset</button>
             </div>
             <label class="mail-field">
               <span>Cerca</span>
-              <input type="search" value="" placeholder="Mittente, tipo, parola chiave" />
+              <input type="search" value="" placeholder="Mittente, tipo, parola chiave" data-mail-search />
             </label>
             <div class="mail-filter-group" aria-label="Stato">
-              <button class="is-active" type="button">Tutta</button>
-              <button type="button">Nuova</button>
-              <button type="button">Urgente</button>
-              <button type="button">Archiviata</button>
+              <button class="is-active" type="button" data-mail-status="all">Tutta</button>
+              <button type="button" data-mail-status="new">Nuova</button>
+              <button type="button" data-mail-status="urgent">Urgente</button>
+              <button type="button" data-mail-status="read">Letta</button>
             </div>
             <label class="mail-field">
               <span>Tipo documento</span>
-              <select>
-                <option>Tutti i documenti</option>
+              <select data-mail-type>
+                <option value="all">Tutti i documenti</option>
                 <option>Avviso statale</option>
                 <option>IRS / fiscale</option>
                 <option>Banca</option>
+                <option>Amministrativo</option>
                 <option>Legale</option>
               </select>
             </label>
             <label class="mail-field">
               <span>Periodo</span>
-              <select>
-                <option>Ultimi 30 giorni</option>
-                <option>Ultimi 90 giorni</option>
-                <option>Anno corrente</option>
-                <option>Archivio completo</option>
+              <select data-mail-period>
+                <option value="30">Ultimi 30 giorni</option>
+                <option value="90">Ultimi 90 giorni</option>
+                <option value="year">Anno corrente</option>
+                <option value="all">Archivio completo</option>
               </select>
             </label>
           </div>
@@ -142,10 +153,11 @@ try {
               <span class="kicker">Inbox cliente</span>
               <h2>Documenti pubblicati</h2>
             </div>
-            <span class="mail-safe-note">5 casi in revisione admin esclusi da questa vista</span>
+            <span class="mail-safe-note" data-review-note>5 casi in revisione admin esclusi da questa vista</span>
           </div>
 
-          <article class="mail-row is-selected">
+          <div data-mail-list>
+          <article class="mail-row is-selected" data-mail-id="DOC-2026-0604-014">
             <div class="mail-icon">FL</div>
             <div class="mail-row-main">
               <div class="mail-row-title">
@@ -208,9 +220,10 @@ try {
               </div>
             </div>
           </article>
+          </div>
         </section>
 
-        <aside class="mail-detail" aria-label="Dettaglio documento selezionato">
+        <aside class="mail-detail" aria-label="Dettaglio documento selezionato" data-mail-detail data-mail-id="DOC-2026-0604-014">
           <div class="mail-panel">
             <div class="mail-detail-head">
               <span class="mail-status urgent">Urgente</span>
@@ -232,8 +245,8 @@ try {
               <div><dt>Controllo</dt><dd>Automatico, alta confidenza</dd></div>
             </dl>
             <div class="mail-detail-actions">
-              <button class="btn btn-primary" type="button">Apri PDF</button>
-              <button class="btn btn-outline" type="button">Chiedi supporto</button>
+              <button class="btn btn-primary" type="button" data-open-pdf>Apri PDF</button>
+              <button class="btn btn-outline" type="button" data-support-request>Chiedi supporto</button>
             </div>
           </div>
 

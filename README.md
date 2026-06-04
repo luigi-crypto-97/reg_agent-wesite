@@ -98,8 +98,54 @@ Il repository include `.nvmrc` con Node 20.
 ```bash
 cd site-v2
 npm install
-npm run dev          # http://localhost:4321
+npm start            # backend + sito statico: http://localhost:4321
+npm run dev          # solo Astro dev server, se servono le sorgenti Astro
 ```
+
+## Backend locale
+
+Il backend reale per la demo è in `server.js` e non richiede dipendenze extra.
+
+```bash
+npm start
+```
+
+Funzioni incluse:
+
+- serve tutte le pagine statiche;
+- protegge `corrispondenza-cliente.html` lato server;
+- protegge `admin.html` lato server e lo limita al ruolo admin;
+- espone `POST /api/login`, `POST /api/logout`, `GET /api/session`, `GET /api/mail`, API admin, download CSV/PDF e ticket supporto;
+- gestisce sessione con cookie HTTP-only;
+- mantiene `login.html`, `admin.html` e `corrispondenza-cliente.html` `noindex,nofollow` e fuori dalla sitemap.
+
+Credenziali demo:
+
+```text
+Console admin:
+username: admin
+password: admin
+
+Area cliente:
+username: cliente
+password: cliente
+```
+
+Separazione ruoli:
+
+- `admin/admin` vede tutta la posta, inclusi documenti non assegnati, documenti di tutti i clienti e casi in standby.
+- `cliente/cliente` vede solo i documenti pubblicati associati a Italia Group LLC.
+- L'admin può assegnare un documento a un cliente, lasciarlo in revisione oppure pubblicarlo.
+
+In locale puoi cambiarle senza toccare il codice:
+
+```bash
+ADMIN_USER=admin ADMIN_PASSWORD='una-password-lunga' npm start
+```
+
+Quando sarà disponibile il dominio definitivo, aggiornare `https://example.com` in canonical, sitemap, robots, Open Graph e `astro.config.mjs`.
+
+Per l'architettura di sicurezza necessaria prima di trattare corrispondenza reale, vedere `SECURITY.md`.
 
 Build di produzione:
 
@@ -110,7 +156,7 @@ npm run preview      # serve dist/ in locale per verificarlo
 
 ## Audit tecnico corrente
 
-- `npm run build` fallisce con Node `18.13.0`: Astro richiede almeno `18.14.1`. Usare Node 20 LTS.
+- `npm run build` fallisce se l'ambiente usa Node `18.13.0`: Astro richiede almeno `18.14.1`. Usare Node 20 LTS.
 - Gli HTML pubblici in root sono la fonte effettivamente servita; `src/pages` non è presente, quindi le ottimizzazioni SEO sono applicate agli HTML statici.
 - `npm audit` segnala vulnerabilità su Astro/Vite/esbuild. Il fix completo richiede upgrade breaking ad Astro 6 e va pianificato come intervento separato dopo il riallineamento delle sorgenti.
 - `https://example.com` è il dominio canonico provvisorio usato per canonical, Open Graph, robots e sitemap. Sostituirlo con il dominio reale prima del go-live.

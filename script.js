@@ -151,26 +151,585 @@
       const username = String(data.get('username') || '').trim();
       const password = String(data.get('password') || '');
       const error = loginForm.querySelector('[data-login-error]');
-      if (username === 'admin' && password === 'admin') {
-        try { sessionStorage.setItem('meridiano:demo-auth', 'ok'); } catch (err) {}
-        const params = new URLSearchParams(window.location.search);
-        const requestedNext = params.get('next') || 'corrispondenza-cliente.html';
-        const next = requestedNext === 'corrispondenza-cliente.html' ? requestedNext : 'corrispondenza-cliente.html';
-        window.location.href = next;
+      const params = new URLSearchParams(window.location.search);
+      const requestedNext = params.get('next') || 'corrispondenza-cliente.html';
+      const allowedNext = ['admin.html', 'corrispondenza-cliente.html'];
+      const next = allowedNext.includes(requestedNext) ? requestedNext : 'corrispondenza-cliente.html';
+      const showError = (message) => {
+        if (error) {
+          error.textContent = message;
+          error.classList.add('is-visible');
+        }
+      };
+      const fallbackLogin = () => {
+        if (username === 'admin' && password === 'admin') {
+          try { sessionStorage.setItem('meridiano:demo-auth', 'ok'); } catch (err) {}
+          window.location.href = next === 'admin.html' ? 'admin.html' : 'admin.html';
+          return;
+        }
+        if (username === 'cliente' && password === 'cliente') {
+          try { sessionStorage.setItem('meridiano:demo-auth', 'ok'); } catch (err) {}
+          window.location.href = 'corrispondenza-cliente.html';
+          return;
+        }
+        showError('Credenziali non valide. Usa admin/admin o cliente/cliente per la demo.');
+      };
+
+      if (window.location.protocol === 'file:') {
+        fallbackLogin();
         return;
       }
-      if (error) {
-        error.textContent = 'Credenziali non valide. Usa admin / admin per la demo.';
-        error.classList.add('is-visible');
-      }
+
+      fetch('/api/login', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password }),
+      })
+        .then((res) => {
+          if (res.ok) {
+            return res.json().then((body) => {
+              try { sessionStorage.setItem('meridiano:demo-auth', 'ok'); } catch (err) {}
+              const target = allowedNext.includes(next) && (
+                (body.user?.role === 'admin' && next === 'admin.html') ||
+                (body.user?.role === 'client' && next === 'corrispondenza-cliente.html')
+              ) ? next : body.next;
+              window.location.href = target || (body.user?.role === 'admin' ? 'admin.html' : 'corrispondenza-cliente.html');
+              return null;
+            });
+          }
+          if (res.status === 404 || res.status === 405) {
+            fallbackLogin();
+            return null;
+          }
+          return res.json().catch(() => ({ error: 'Credenziali non valide.' }));
+        })
+        .then((body) => {
+          if (body) showError(body.error || 'Credenziali non valide.');
+        })
+        .catch(() => {
+          fallbackLogin();
+        });
     });
   }
 
   document.querySelectorAll('[data-demo-logout]').forEach((link) => {
-    link.addEventListener('click', () => {
+    link.addEventListener('click', (e) => {
       try { sessionStorage.removeItem('meridiano:demo-auth'); } catch (err) {}
+      if (window.location.protocol === 'file:') return;
+      e.preventDefault();
+      fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'same-origin',
+      })
+        .finally(() => {
+          window.location.href = 'login.html';
+        });
     });
   });
+
+  // ---- Protected mailroom interactions
+  const mailApp = document.querySelector('.mail-app');
+  if (mailApp) {
+    const fallbackMail = [
+      {
+        id: 'DOC-2026-0604-014',
+        initials: 'FL',
+        sender: 'Florida Department of State',
+        subject: 'Annual Report reminder',
+        summary: 'Annual Report reminder per Italia Group LLC. Scadenza operativa: 1 maggio.',
+        receivedAt: '2026-06-04T09:42:00+02:00',
+        status: 'urgent',
+        documentType: 'Avviso statale',
+        confidenceScore: 98,
+        detailTitle: 'Annual Report reminder',
+        previewTitle: 'Annual Report Notice',
+        previewBody: 'Italia Group LLC\nSarasota, FL',
+        assignmentReason: 'Documento assegnato a Italia Group LLC tramite corrispondenza esatta su ragione sociale, indirizzo registered agent e storico annual report.',
+        control: 'Automatico, alta confidenza',
+      },
+      {
+        id: 'DOC-2026-0603-009',
+        initials: 'IRS',
+        sender: 'Internal Revenue Service',
+        subject: 'Conferma ricezione comunicazione fiscale federale',
+        summary: "Conferma ricezione comunicazione fiscale federale collegata all'EIN aziendale.",
+        receivedAt: '2026-06-03T16:15:00+02:00',
+        status: 'new',
+        documentType: 'IRS / fiscale',
+        confidenceScore: 96,
+        detailTitle: 'Conferma IRS',
+        previewTitle: 'IRS Notice',
+        previewBody: 'Italia Group LLC\nFederal tax correspondence',
+        assignmentReason: 'Documento assegnato tramite corrispondenza tra EIN aziendale, ragione sociale e storico fiscale del cliente.',
+        control: 'Automatico, alta confidenza',
+      },
+      {
+        id: 'DOC-2026-0531-021',
+        initials: 'BK',
+        sender: 'Relay Financial',
+        subject: 'Comunicazione bancaria ordinaria',
+        summary: 'Comunicazione bancaria ordinaria per il conto business.',
+        receivedAt: '2026-05-31T11:08:00+02:00',
+        status: 'new',
+        documentType: 'Banca',
+        confidenceScore: null,
+        detailTitle: 'Comunicazione bancaria',
+        previewTitle: 'Relay Financial',
+        previewBody: 'Italia Group LLC\nBusiness account notice',
+        assignmentReason: 'Documento pubblicato dopo revisione manuale amministratore per confermare intestazione e riferimenti conto.',
+        control: 'Approvata da admin',
+      },
+      {
+        id: 'DOC-2026-0518-006',
+        initials: 'RA',
+        sender: 'Registered Agent Office',
+        subject: 'Nota interna di scansione',
+        summary: 'Nota interna di conferma scansione e archiviazione documento societario.',
+        receivedAt: '2026-05-18T10:30:00+02:00',
+        status: 'read',
+        documentType: 'Amministrativo',
+        confidenceScore: 100,
+        detailTitle: 'Nota di archiviazione',
+        previewTitle: 'Scan Confirmation',
+        previewBody: 'Italia Group LLC\nDocument archived',
+        assignmentReason: 'Documento interno associato direttamente al fascicolo cliente.',
+        control: 'Automatico, alta confidenza',
+      },
+    ];
+    const state = {
+      items: fallbackMail,
+      selectedId: fallbackMail[0].id,
+      status: 'all',
+      query: '',
+      type: 'all',
+      period: '30',
+      reviewQueueCount: 5,
+    };
+    const statusLabels = {
+      urgent: 'Urgente',
+      new: 'Nuova',
+      read: 'Letta',
+      archived: 'Archiviata',
+    };
+    const list = document.querySelector('[data-mail-list]');
+    const detail = document.querySelector('[data-mail-detail]');
+    const search = document.querySelector('[data-mail-search]');
+    const type = document.querySelector('[data-mail-type]');
+    const period = document.querySelector('[data-mail-period]');
+    const reviewNote = document.querySelector('[data-review-note]');
+    const escapeHtml = (value) => String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+    const formatDate = (value) => new Intl.DateTimeFormat('it-IT', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(new Date(value));
+    const selectedItem = () => state.items.find((item) => item.id === state.selectedId) || state.items[0];
+    const isWithinPeriod = (item) => {
+      if (state.period === 'all') return true;
+      const itemDate = new Date(item.receivedAt);
+      if (state.period === 'year') return itemDate.getFullYear() === new Date().getFullYear();
+      const days = Number(state.period || 30);
+      return Date.now() - itemDate.getTime() <= days * 24 * 60 * 60 * 1000;
+    };
+    const filteredItems = () => state.items.filter((item) => {
+      const haystack = `${item.sender} ${item.subject} ${item.summary} ${item.documentType}`.toLowerCase();
+      const statusOk = state.status === 'all' || item.status === state.status;
+      const queryOk = !state.query || haystack.includes(state.query.toLowerCase());
+      const typeOk = state.type === 'all' || item.documentType === state.type;
+      return statusOk && queryOk && typeOk && isWithinPeriod(item);
+    });
+    const renderMetrics = () => {
+      const setText = (selector, value) => {
+        const el = document.querySelector(selector);
+        if (el) el.textContent = value;
+      };
+      setText('[data-metric-new]', state.items.filter((item) => item.status === 'new').length);
+      setText('[data-metric-review]', state.reviewQueueCount);
+      setText('[data-metric-urgent]', state.items.filter((item) => item.status === 'urgent').length);
+      setText('[data-metric-archived]', state.items.filter((item) => item.status === 'archived' || item.status === 'read').length + 47);
+      if (reviewNote) reviewNote.textContent = `${state.reviewQueueCount} casi in revisione admin esclusi da questa vista`;
+    };
+    const renderList = () => {
+      if (!list) return;
+      const rows = filteredItems();
+      if (!rows.length) {
+        list.innerHTML = '<div class="mail-empty">Nessun documento corrisponde ai filtri selezionati.</div>';
+        return;
+      }
+      if (!rows.some((item) => item.id === state.selectedId)) state.selectedId = rows[0].id;
+      list.innerHTML = rows.map((item) => `
+        <article class="mail-row ${item.id === state.selectedId ? 'is-selected' : ''}" data-mail-id="${escapeHtml(item.id)}" tabindex="0" role="button">
+          <div class="mail-icon">${escapeHtml(item.initials || item.sender.slice(0, 2).toUpperCase())}</div>
+          <div class="mail-row-main">
+            <div class="mail-row-title">
+              <h3>${escapeHtml(item.sender)}</h3>
+              <span class="mail-status ${escapeHtml(item.status)}">${escapeHtml(statusLabels[item.status] || item.status)}</span>
+            </div>
+            <p>${escapeHtml(item.summary)}</p>
+            <div class="mail-meta">
+              <span>Ricevuta ${formatDate(item.receivedAt)}</span>
+              <span>${escapeHtml(item.documentType)}</span>
+              <span>${item.confidenceScore == null ? escapeHtml(item.control || 'Approvata da admin') : `Confidenza ${item.confidenceScore}%`}</span>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    };
+    const renderDetail = () => {
+      const item = selectedItem();
+      if (!detail || !item) return;
+      detail.dataset.mailId = item.id;
+      const previewBody = escapeHtml(item.previewBody || '').replace(/\n/g, '<br/>');
+      detail.querySelector('.mail-panel').innerHTML = `
+        <div class="mail-detail-head">
+          <span class="mail-status ${escapeHtml(item.status)}">${escapeHtml(statusLabels[item.status] || item.status)}</span>
+          <span class="kicker">${escapeHtml(item.id)}</span>
+        </div>
+        <div class="mail-preview" aria-label="Anteprima documento">
+          <div class="mail-paper">
+            <span>${escapeHtml(item.sender)}</span>
+            <strong>${escapeHtml(item.previewTitle || item.detailTitle || item.subject)}</strong>
+            <p>${previewBody}</p>
+          </div>
+        </div>
+        <h2>${escapeHtml(item.detailTitle || item.subject)}</h2>
+        <p class="mail-detail-copy">${escapeHtml(item.assignmentReason || item.summary)}</p>
+        <dl class="mail-facts">
+          <div><dt>Mittente</dt><dd>${escapeHtml(item.sender)}</dd></div>
+          <div><dt>Ricezione</dt><dd>${formatDate(item.receivedAt)}</dd></div>
+          <div><dt>Stato</dt><dd>Pubblicato</dd></div>
+          <div><dt>Controllo</dt><dd>${escapeHtml(item.control || 'Automatico')}</dd></div>
+        </dl>
+        <div class="mail-detail-actions">
+          <button class="btn btn-primary" type="button" data-open-pdf>Apri PDF</button>
+          <button class="btn btn-outline" type="button" data-support-request>Chiedi supporto</button>
+        </div>
+      `;
+    };
+    const renderMailroom = () => {
+      renderMetrics();
+      renderList();
+      renderDetail();
+    };
+    const downloadCsvFallback = () => {
+      const header = ['id', 'sender', 'subject', 'receivedAt', 'status', 'documentType'];
+      const csv = [
+        header.join(','),
+        ...state.items.map((item) => header.map((key) => `"${String(item[key] ?? '').replace(/"/g, '""')}"`).join(',')),
+      ].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'meridiano-corrispondenza.csv';
+      a.click();
+      URL.revokeObjectURL(url);
+    };
+    const postTicket = (endpoint, defaultMessage) => {
+      const item = selectedItem();
+      if (!item) return;
+      const message = window.prompt(defaultMessage, '');
+      if (!message) return;
+      if (window.location.protocol === 'file:') {
+        window.alert('Richiesta registrata nella demo locale.');
+        return;
+      }
+      fetch(endpoint, {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mailId: item.id, message }),
+      })
+        .then((res) => res.json().then((body) => ({ ok: res.ok, body })))
+        .then(({ ok, body }) => {
+          if (!ok) throw new Error(body.error || 'Operazione non riuscita.');
+          window.alert(`Richiesta inviata. Ticket: ${body.ticketId}`);
+        })
+        .catch((error) => {
+          window.alert(error.message || 'Operazione non riuscita.');
+        });
+    };
+
+    list?.addEventListener('click', (e) => {
+      const row = e.target.closest('[data-mail-id]');
+      if (!row) return;
+      state.selectedId = row.dataset.mailId;
+      renderMailroom();
+    });
+    list?.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const row = e.target.closest('[data-mail-id]');
+      if (!row) return;
+      e.preventDefault();
+      state.selectedId = row.dataset.mailId;
+      renderMailroom();
+    });
+    search?.addEventListener('input', () => {
+      state.query = search.value.trim();
+      renderMailroom();
+    });
+    type?.addEventListener('change', () => {
+      state.type = type.value;
+      renderMailroom();
+    });
+    period?.addEventListener('change', () => {
+      state.period = period.value;
+      renderMailroom();
+    });
+    document.querySelectorAll('[data-mail-status]').forEach((button) => {
+      button.addEventListener('click', () => {
+        state.status = button.dataset.mailStatus;
+        document.querySelectorAll('[data-mail-status]').forEach((btn) => btn.classList.toggle('is-active', btn === button));
+        renderMailroom();
+      });
+    });
+    document.querySelector('[data-mail-reset]')?.addEventListener('click', () => {
+      state.status = 'all';
+      state.query = '';
+      state.type = 'all';
+      state.period = '30';
+      if (search) search.value = '';
+      if (type) type.value = 'all';
+      if (period) period.value = '30';
+      document.querySelectorAll('[data-mail-status]').forEach((btn) => btn.classList.toggle('is-active', btn.dataset.mailStatus === 'all'));
+      renderMailroom();
+    });
+    document.querySelector('[data-download-archive]')?.addEventListener('click', () => {
+      if (window.location.protocol === 'file:') {
+        downloadCsvFallback();
+        return;
+      }
+      window.location.href = '/api/mail/archive.csv';
+    });
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('[data-open-pdf]')) {
+        const item = selectedItem();
+        if (!item) return;
+        if (window.location.protocol === 'file:') {
+          window.alert('Avvia il backend con npm start per aprire il PDF protetto.');
+          return;
+        }
+        window.open(`/api/mail/${encodeURIComponent(item.id)}.pdf`, '_blank', 'noopener');
+      }
+      if (e.target.closest('[data-support-request]')) {
+        postTicket('/api/support', 'Descrivi la richiesta di supporto per questo documento:');
+      }
+      if (e.target.closest('[data-report-issue]')) {
+        postTicket('/api/report-issue', 'Descrivi il problema di assegnazione o contenuto:');
+      }
+    });
+
+    renderMailroom();
+
+    if (window.location.protocol !== 'file:') {
+      fetch('/api/mail', { credentials: 'same-origin' })
+        .then((res) => {
+          if (res.status === 401) {
+            window.location.replace('login.html?next=corrispondenza-cliente.html');
+            return null;
+          }
+          return res.ok ? res.json() : null;
+        })
+        .then((payload) => {
+          if (!payload || !payload.ok) return;
+          const company = document.querySelector('.client-company');
+          if (company && payload.company) company.textContent = payload.company;
+          state.items = payload.items || state.items;
+          state.reviewQueueCount = payload.reviewQueueCount ?? state.reviewQueueCount;
+          state.selectedId = state.items[0]?.id || state.selectedId;
+          renderMailroom();
+        })
+        .catch(() => {});
+    }
+  }
+
+  // ---- Admin mailroom
+  const adminApp = document.querySelector('.admin-app');
+  if (adminApp) {
+    const adminState = {
+      items: [],
+      clients: [],
+      selectedId: null,
+      filter: 'all',
+    };
+    const adminList = document.querySelector('[data-admin-list]');
+    const adminDetail = document.querySelector('[data-admin-detail]');
+    const statusLabel = (status) => ({
+      published: 'Pubblicato',
+      needs_review: 'Da verificare',
+    }[status] || status);
+    const escapeHtml = (value) => String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+    const formatDate = (value) => new Intl.DateTimeFormat('it-IT', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    }).format(new Date(value));
+    const clientName = (clientId) => adminState.clients.find((client) => client.id === clientId)?.company || 'Non assegnata';
+    const selectedAdminItem = () => adminState.items.find((item) => item.id === adminState.selectedId) || adminState.items[0];
+    const visibleAdminItems = () => adminState.items.filter((item) => adminState.filter === 'all' || item.publicationStatus === adminState.filter);
+    const setAdminMetric = (selector, value) => {
+      const el = document.querySelector(selector);
+      if (el) el.textContent = value;
+    };
+    const renderAdminMetrics = () => {
+      setAdminMetric('[data-admin-total]', adminState.items.length);
+      setAdminMetric('[data-admin-review]', adminState.items.filter((item) => item.publicationStatus === 'needs_review').length);
+      setAdminMetric('[data-admin-unassigned]', adminState.items.filter((item) => !item.clientId).length);
+      setAdminMetric('[data-admin-published]', adminState.items.filter((item) => item.publicationStatus === 'published').length);
+    };
+    const renderAdminList = () => {
+      if (!adminList) return;
+      const rows = visibleAdminItems();
+      if (!rows.length) {
+        adminList.innerHTML = '<div class="mail-empty">Nessun documento in questa vista.</div>';
+        return;
+      }
+      if (!rows.some((item) => item.id === adminState.selectedId)) adminState.selectedId = rows[0].id;
+      adminList.innerHTML = rows.map((item) => `
+        <article class="mail-row ${item.id === adminState.selectedId ? 'is-selected' : ''}" data-admin-mail-id="${escapeHtml(item.id)}" tabindex="0" role="button">
+          <div class="mail-icon">${escapeHtml(item.initials || item.sender.slice(0, 2).toUpperCase())}</div>
+          <div class="mail-row-main">
+            <div class="mail-row-title">
+              <h3>${escapeHtml(item.sender)}</h3>
+              <span class="mail-status ${item.publicationStatus === 'needs_review' ? 'review' : 'read'}">${escapeHtml(statusLabel(item.publicationStatus))}</span>
+            </div>
+            <p>${escapeHtml(item.summary)}</p>
+            <div class="mail-meta">
+              <span>${formatDate(item.receivedAt)}</span>
+              <span>${escapeHtml(item.documentType)}</span>
+              <span>${escapeHtml(clientName(item.clientId))}</span>
+              <span>${item.confidenceScore == null ? 'Manuale' : `Confidenza ${item.confidenceScore}%`}</span>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    };
+    const renderAdminDetail = () => {
+      const item = selectedAdminItem();
+      if (!adminDetail || !item) return;
+      const options = [
+        '<option value="">Seleziona cliente...</option>',
+        ...adminState.clients.map((client) => `<option value="${escapeHtml(client.id)}" ${client.id === item.clientId ? 'selected' : ''}>${escapeHtml(client.company)}</option>`),
+      ].join('');
+      adminDetail.innerHTML = `
+        <div class="mail-panel">
+          <div class="mail-detail-head">
+            <span class="mail-status ${item.publicationStatus === 'needs_review' ? 'review' : 'read'}">${escapeHtml(statusLabel(item.publicationStatus))}</span>
+            <span class="kicker">${escapeHtml(item.id)}</span>
+          </div>
+          <div class="mail-preview" aria-label="Anteprima documento">
+            <div class="mail-paper">
+              <span>${escapeHtml(item.sender)}</span>
+              <strong>${escapeHtml(item.previewTitle || item.detailTitle || item.subject)}</strong>
+              <p>${escapeHtml(item.previewBody || '').replace(/\n/g, '<br/>')}</p>
+            </div>
+          </div>
+          <h2>${escapeHtml(item.detailTitle || item.subject)}</h2>
+          <p class="mail-detail-copy">${escapeHtml(item.assignmentReason || item.summary)}</p>
+          <dl class="mail-facts">
+            <div><dt>Cliente</dt><dd>${escapeHtml(clientName(item.clientId))}</dd></div>
+            <div><dt>Ricezione</dt><dd>${formatDate(item.receivedAt)}</dd></div>
+            <div><dt>Pubblicazione</dt><dd>${escapeHtml(statusLabel(item.publicationStatus))}</dd></div>
+            <div><dt>Controllo</dt><dd>${escapeHtml(item.control || 'Da verificare')}</dd></div>
+          </dl>
+          <label class="mail-field admin-client-select">
+            <span>Assegna a cliente</span>
+            <select data-admin-client-select>${options}</select>
+          </label>
+          <div class="mail-detail-actions">
+            <button class="btn btn-outline" type="button" data-admin-assign>Assegna</button>
+            <button class="btn btn-primary" type="button" data-admin-assign-publish>Assegna e pubblica</button>
+            <button class="btn btn-outline" type="button" data-admin-publish ${item.clientId ? '' : 'disabled'}>Pubblica</button>
+            <button class="btn btn-outline" type="button" data-admin-open-pdf>Apri PDF</button>
+          </div>
+        </div>
+      `;
+    };
+    const renderAdmin = () => {
+      renderAdminMetrics();
+      renderAdminList();
+      renderAdminDetail();
+    };
+    const loadAdmin = () => {
+      fetch('/api/admin/mail', { credentials: 'same-origin' })
+        .then((res) => {
+          if (res.status === 401 || res.status === 403) {
+            window.location.replace('login.html?next=admin.html');
+            return null;
+          }
+          return res.ok ? res.json() : null;
+        })
+        .then((payload) => {
+          if (!payload || !payload.ok) return;
+          adminState.items = payload.items || [];
+          adminState.clients = payload.clients || [];
+          adminState.selectedId = adminState.selectedId || adminState.items[0]?.id || null;
+          renderAdmin();
+        })
+        .catch(() => {});
+    };
+    const postAdminAction = (endpoint, body) => fetch(endpoint, {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    }).then((res) => res.json().then((payload) => {
+      if (!res.ok) throw new Error(payload.error || 'Operazione non riuscita.');
+      return payload;
+    }));
+
+    adminList?.addEventListener('click', (e) => {
+      const row = e.target.closest('[data-admin-mail-id]');
+      if (!row) return;
+      adminState.selectedId = row.dataset.adminMailId;
+      renderAdmin();
+    });
+    document.querySelectorAll('[data-admin-filter]').forEach((button) => {
+      button.addEventListener('click', () => {
+        adminState.filter = button.dataset.adminFilter;
+        document.querySelectorAll('[data-admin-filter]').forEach((btn) => btn.classList.toggle('is-active', btn === button));
+        renderAdmin();
+      });
+    });
+    document.querySelector('[data-admin-refresh]')?.addEventListener('click', loadAdmin);
+    document.addEventListener('click', (e) => {
+      const item = selectedAdminItem();
+      if (!adminApp.contains(e.target) || !item) return;
+      const clientId = document.querySelector('[data-admin-client-select]')?.value;
+      if (e.target.closest('[data-admin-assign]')) {
+        if (!clientId) { window.alert('Seleziona un cliente.'); return; }
+        postAdminAction('/api/admin/mail/assign', { mailId: item.id, clientId, publish: false })
+          .then(loadAdmin)
+          .catch((error) => window.alert(error.message));
+      }
+      if (e.target.closest('[data-admin-assign-publish]')) {
+        if (!clientId) { window.alert('Seleziona un cliente.'); return; }
+        postAdminAction('/api/admin/mail/assign', { mailId: item.id, clientId, publish: true })
+          .then(loadAdmin)
+          .catch((error) => window.alert(error.message));
+      }
+      if (e.target.closest('[data-admin-publish]')) {
+        postAdminAction('/api/admin/mail/publish', { mailId: item.id })
+          .then(loadAdmin)
+          .catch((error) => window.alert(error.message));
+      }
+      if (e.target.closest('[data-admin-open-pdf]')) {
+        window.open(`/api/mail/${encodeURIComponent(item.id)}.pdf`, '_blank', 'noopener');
+      }
+    });
+    loadAdmin();
+  }
 
   // ---- Parallax for hero images (light)
   const parallaxEls = document.querySelectorAll('[data-parallax]');
