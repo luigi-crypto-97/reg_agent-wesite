@@ -85,16 +85,33 @@
       <!-- Right: hero visual + included card -->
       <div class="col-5" style="grid-column: span 5;" data-reveal data-delay="200">
         <div style="position:relative;">
-          <div class="photo" style="aspect-ratio:4/5;">
-            <span class="photo-num">Miami, FL</span>
-            <span class="label">Sunshine State</span>
-          </div>
-          <!-- floating included card -->
-          <div style="position:absolute; left:-24px; bottom:-28px; background:rgb(var(--paper-soft)); border-radius:16px; padding:22px 24px; box-shadow:0 30px 60px -28px rgb(var(--ink) / 0.45), inset 0 0 0 1px rgb(var(--hairline)); width:min(86%, 320px);">
-            <div class="kicker mb-3">Il punto di partenza</div>
-            <div style="font-family:var(--font-display); font-size:clamp(1.35rem,2.2vw,1.7rem); font-weight:600; letter-spacing:-0.015em; line-height:1.12;">La tua società,<br/>chiavi in mano</div>
-            <div class="rule" style="margin:16px 0;"></div>
-            <p style="font-size:13px; color:rgb(var(--ink-soft)); line-height:1.6;">Un interlocutore unico tra te e la Florida. Definiamo insieme la soluzione su misura, dopo una breve conversazione.</p>
+<div class="fl-map" data-reveal>
+            <svg class="fl-map-svg" viewBox="0 0 440 400" role="img" aria-label="Mappa stilizzata della Florida con Miami evidenziata">
+              <defs>
+                <radialGradient id="flGlow" cx="68%" cy="74%" r="58%">
+                  <stop offset="0%" stop-color="rgb(34 98 240 / 0.45)"/>
+                  <stop offset="100%" stop-color="rgb(34 98 240 / 0)"/>
+                </radialGradient>
+              </defs>
+              <g class="fl-grid">
+                <line x1="0" y1="80" x2="440" y2="80"/><line x1="0" y1="160" x2="440" y2="160"/>
+                <line x1="0" y1="240" x2="440" y2="240"/><line x1="0" y1="320" x2="440" y2="320"/>
+                <line x1="88" y1="0" x2="88" y2="400"/><line x1="176" y1="0" x2="176" y2="400"/>
+                <line x1="264" y1="0" x2="264" y2="400"/><line x1="352" y1="0" x2="352" y2="400"/>
+              </g>
+              <text class="fl-corner" x="14" y="24">30°N</text>
+              <text class="fl-corner" x="360" y="388">24°N · 80°W</text>
+              <circle cx="304" cy="298" r="148" fill="url(#flGlow)"/>
+              <path class="fl-shape" d="M322 102 C330 132 331 170 330 206 C329 244 321 274 303 300 C292 318 283 330 276 340 C270 345 263 341 258 330 C248 306 240 282 236 256 C232 230 231 210 231 192 C230 178 230 173 227 170 C200 164 150 156 96 146 C64 140 44 136 30 132 C34 122 32 118 46 117 C110 109 200 104 270 103 C292 102 308 102 322 102 Z"/>
+              <g class="fl-keys"><circle cx="268" cy="348" r="2.4"/><circle cx="258" cy="353" r="2.2"/><circle cx="248" cy="357" r="2"/><circle cx="239" cy="360" r="1.8"/></g>
+              <g class="fl-marker" transform="translate(304,298)"><circle class="fl-marker-pulse" r="10"/><circle class="fl-marker-dot" r="5"/></g>
+              <text class="fl-marker-label" x="330" y="294">MIAMI</text>
+              <text class="fl-marker-coord" x="330" y="310">25.76° N · 80.19° W</text>
+            </svg>
+            <div class="fl-cap">
+              <div><div class="fl-cap-place">Miami, Florida</div><div class="fl-cap-sub">Registered Agent · USA</div></div>
+              <span class="fl-cap-badge">Sede operativa</span>
+            </div>
           </div>
         </div>
       </div>
@@ -168,7 +185,7 @@
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg>
               </div>
               <h3 style="font-family:var(--font-display); font-size:18px; font-weight:600; letter-spacing:-0.01em; margin-bottom:8px;">Indirizzo fisico in Florida</h3>
-              <p style="font-size:14px; color:rgb(var(--ink-soft)); line-height:1.6;">Un ufficio reale a Sarasota, non una casella postale. Usi il nostro indirizzo, proteggi il tuo.</p>
+              <p style="font-size:14px; color:rgb(var(--ink-soft)); line-height:1.6;">Un ufficio reale a Miami, non una casella postale. Usi il nostro indirizzo, proteggi il tuo.</p>
             </div>
           </div>
           <div class="col-6" style="grid-column: span 6;">
@@ -487,10 +504,7 @@
   <div class="wrap">
     <div class="grid-12" style="gap:56px; align-items:center;">
       <div class="col-5" style="grid-column: span 5;" data-reveal>
-        <div class="photo" style="aspect-ratio:5/4;">
-          <span class="photo-num">Risorse</span>
-          <span class="label">Guida alla Florida</span>
-        </div>
+<image-slot id="home-guida" src="assets/img/beach-turquoise.jpg" style="display:block; width:100%; height:auto; aspect-ratio:5/4;" radius="16" placeholder="Trascina una foto — es. skyline o porto della Florida"></image-slot>
       </div>
       <div class="col-7" style="grid-column: span 7;" data-reveal data-delay="150">
         <span class="kicker">Guida informativa</span>
@@ -655,6 +669,7 @@
   </div>
 </div>
 
+<script src="image-slot.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

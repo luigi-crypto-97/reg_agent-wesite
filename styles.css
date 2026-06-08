@@ -2424,3 +2424,147 @@ input, select, textarea { font: inherit; color: inherit; }
     display: none;
   }
 }
+
+/* ============================================================
+   FLORIDA MAP — custom brand cartography
+   ============================================================ */
+.fl-map {
+  position: relative;
+  background: rgb(var(--ink));
+  border-radius: 20px;
+  padding: 26px;
+  overflow: hidden;
+  box-shadow: 0 40px 90px -55px rgb(var(--ink) / 0.8), inset 0 0 0 1px rgb(var(--paper) / 0.05);
+}
+.fl-map-svg { width: 100%; height: auto; display: block; }
+.fl-grid line { stroke: rgb(188 211 255 / 0.1); stroke-width: 1; }
+.fl-shape {
+  fill: rgb(34 98 240 / 0.08);
+  stroke: rgb(34 98 240);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fl-map.is-visible .fl-shape {
+    stroke-dasharray: 1400;
+    stroke-dashoffset: 1400;
+    animation: flDraw 2.2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  }
+}
+@keyframes flDraw { to { stroke-dashoffset: 0; } }
+.fl-keys circle { fill: rgb(188 211 255 / 0.7); }
+.fl-marker-pulse { fill: rgb(34 98 240 / 0.35); transform-origin: center; animation: flPulse 2.4s ease-out infinite; }
+.fl-marker-dot { fill: rgb(34 98 240); stroke: white; stroke-width: 1.5; }
+@media (prefers-reduced-motion: reduce) { .fl-marker-pulse { animation: none; } }
+@keyframes flPulse { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
+.fl-marker-label { fill: white; font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em; }
+.fl-marker-coord { fill: rgb(188 211 255 / 0.7); font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.06em; }
+.fl-corner {
+  fill: rgb(188 211 255 / 0.45);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+.fl-cap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgb(var(--paper) / 0.12);
+}
+.fl-cap > div:first-child { flex: 1; min-width: 0; }
+.fl-cap .fl-cap-place {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: rgb(var(--paper));
+}
+.fl-cap .fl-cap-sub {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgb(var(--paper) / 0.55);
+  margin-top: 4px;
+}
+.fl-cap .fl-cap-badge {
+  flex: 0 0 auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgb(var(--clay-soft));
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgb(34 98 240 / 0.16);
+  box-shadow: inset 0 0 0 1px rgb(34 98 240 / 0.35);
+}
+
+/* ============================================================
+   SEAL — circular brand stamp
+   ============================================================ */
+.seal { display: block; }
+.fl-stamp {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 92px;
+  height: 92px;
+  z-index: 3;
+}
+@media (max-width: 600px) { .fl-stamp { width: 68px; height: 68px; top: 14px; right: 14px; } }
+.seal-ring-outer { fill: none; stroke: rgb(188 211 255 / 0.5); stroke-width: 1; }
+.seal-ring-inner { fill: none; stroke: rgb(188 211 255 / 0.28); stroke-width: 1; }
+.seal-text { fill: rgb(188 211 255 / 0.85); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.18em; }
+.seal-mono { fill: rgb(188 211 255 / 0.6); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; }
+.seal-year { fill: white; font-family: var(--font-display); font-size: 26px; font-weight: 600; letter-spacing: -0.02em; }
+.seal-rule { stroke: rgb(188 211 255 / 0.4); stroke-width: 1; }
+.seal--ink .seal-ring-outer { stroke: rgb(var(--clay) / 0.4); }
+.seal--ink .seal-ring-inner { stroke: rgb(var(--clay) / 0.22); }
+.seal--ink .seal-text { fill: rgb(var(--clay-deep)); }
+.seal--ink .seal-mono { fill: rgb(var(--ink-mute)); }
+.seal--ink .seal-year { fill: rgb(var(--ink)); }
+.seal--ink .seal-rule { stroke: rgb(var(--clay) / 0.4); }
+
+@media (prefers-reduced-motion: no-preference) {
+  .seal--spin .seal-rotor { transform-origin: center; animation: sealSpin 28s linear infinite; }
+}
+@keyframes sealSpin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   COORDINATE MOTIF — recurring graphic language
+   ============================================================ */
+.coord-motif {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+  background-image:
+    repeating-linear-gradient(to right, rgb(var(--ink) / 0.05) 0 1px, transparent 1px 104px),
+    repeating-linear-gradient(to bottom, rgb(var(--ink) / 0.05) 0 1px, transparent 1px 104px);
+}
+.coord-motif--dark {
+  background-image:
+    repeating-linear-gradient(to right, rgb(var(--paper) / 0.05) 0 1px, transparent 1px 104px),
+    repeating-linear-gradient(to bottom, rgb(var(--paper) / 0.05) 0 1px, transparent 1px 104px);
+}
+.coord-tag {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: rgb(var(--ink-faint));
+}
+.coord-motif--dark .coord-tag { color: rgb(var(--paper) / 0.3); }
+
+/* image-slot brand framing */
+image-slot {
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px rgb(var(--hairline-hard));
+  overflow: hidden;
+}
